@@ -27,7 +27,7 @@ def print_board(board):
     print("  " + " ".join(str(i) for i in range(BOARD_SIZE)))  #Print column headers
     #Enumerate associates a tuple with an associated number
     for i, row in enumerate(board):
-        print(i, " ".join(row))  #Print row index and row contents
+        print(chr(65 + i), " ".join(row))  #Print row index and row contents
 
 #Tracker for king pieces
 def is_king(piece):
@@ -155,11 +155,20 @@ def play_game():
                 print(f"{'Human' if winner == human_player else 'AI'} wins!")
                 break
             if current_player == human_player:
-                print("Your move (e.g., 5 0 4 1):")
+########################################################################################
+                # REWORK PLACING
+                # DONE : battleship style moving instead of exact cords
+                # WORK : replace the current placing style with something cleaner, something more dynamic
+                print("Your move (e.g., piece location F 0 E 1):")
                 while True:
                     try:
-                        #Human move input
-                        r1, c1, r2, c2 = map(int, input().split())
+                        move_input = input().strip().upper().split()
+                        if len(move_input) != 4:
+                            raise ValueError
+                        r1 = ord(move_input[0]) - 65
+                        c1 = int(move_input[1])
+                        r2 = ord(move_input[2]) - 65
+                        c2 = int(move_input[3])
                         move = ((r1, c1), (r2, c2))
                         if move in get_all_moves(board, human_player):
                             board = make_move(board, move)
@@ -167,7 +176,7 @@ def play_game():
                         else:
                             print("Invalid move. Try again.")
                     except ValueError:
-                        print("Invalid input format.")
+                        print("Invalid input format. Use e.g., F 0 D 2")
             else:
                 print("AI is thinking...")
                 _, move = minimax(board, 3, False)
