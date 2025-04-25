@@ -155,28 +155,44 @@ def play_game():
                 print(f"{'Human' if winner == human_player else 'AI'} wins!")
                 break
             if current_player == human_player:
-########################################################################################
-                # REWORK PLACING
-                # DONE : battleship style moving instead of exact cords
-                # WORK : replace the current placing style with something cleaner, something more dynamic
-                print("Your move (e.g., piece location F 0 E 1):")
                 while True:
                     try:
-                        move_input = input().strip().upper().split()
-                        if len(move_input) != 4:
+                        print("Choose the piece you want to grab (e.g., F 0), or 'b' to go back:")
+                        piece_input = input().strip().upper()
+                        if piece_input == 'B':
+                            # 'b' input lets the user cancel and reselect
+                            print("Returning to piece selection.")
+                            continue
+                        row_col = piece_input.split()
+                        if len(row_col) != 2:     # If container has more than 2 elements, raise ValueErr
                             raise ValueError
-                        r1 = ord(move_input[0]) - 65
-                        c1 = int(move_input[1])
-                        r2 = ord(move_input[2]) - 65
-                        c2 = int(move_input[3])
+                        r1 = ord(row_col[0]) - 65 # Convert row letter to row index
+                        c1 = int(row_col[1])      # Convert to int
+
+                        print("Where do you want to place the piece (e.g., E 1), or 'b' to go back:")
+                        dest_input = input().strip().upper()
+                        if dest_input == 'B':
+                            # Another cancel block
+                            print("Move cancelled. Start over.")
+                            continue
+                        row_col = dest_input.split()
+                        if len(row_col) != 2:     # If container has more than 2 elements, raise ValueErr
+                            raise ValueError
+                        r2 = ord(row_col[0]) - 65 # Convert row letter to row index
+                        c2 = int(row_col[1])      # Convert to int
+
+                        # Check to see if this move is actually valid
                         move = ((r1, c1), (r2, c2))
                         if move in get_all_moves(board, human_player):
+                            # If that move is actually valid, make the move and break the loop
                             board = make_move(board, move)
                             break
                         else:
                             print("Invalid move. Try again.")
                     except ValueError:
-                        print("Invalid input format. Use e.g., F 0 D 2")
+                        # 
+                        print("Invalid input. Please use the format 'Row Column': (F 0) ")
+
             else:
                 print("AI is thinking...")
                 _, move = minimax(board, 3, False)
