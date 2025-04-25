@@ -34,18 +34,7 @@ No third-party dependencies are required, it runs with just standard Python libr
 
 ## How to Use the Software
 
-- When the game starts, the board will display like this:
-  ```
-  0 1 2 3 4 5 6 7
-A . b . b . b . b
-B b . b . b . b .
-C . b . b . b . b
-D . . . . . . . .
-E . . . . . . . .
-F r . r . r . r .
-G . r . r . r . r
-H r . r . r . r .
-  ```
+- When the game starts, the board will display in the terminal like a normal checkers board
 
 - You will be prompted to:
   - **Select a piece** using a row letter and column number (e.g., `F 0`)
