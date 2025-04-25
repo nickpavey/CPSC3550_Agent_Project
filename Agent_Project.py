@@ -188,9 +188,11 @@ def play_game():
                             board = make_move(board, move)
                             break
                         else:
+                            print_board(board)
                             print("Invalid move. Try again.")
                     except ValueError:
                         # 
+                        print_board(board)
                         print("Invalid input. Please use the format 'Row Column': (F 0) ")
 
             else:
