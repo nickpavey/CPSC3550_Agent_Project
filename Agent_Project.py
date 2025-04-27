@@ -16,7 +16,8 @@ def create_board():
         for col in range(BOARD_SIZE):
             if (row + col) % 2 == 1:  
                 board[row][col] = BLACK
-    for row in range(5, 8):  #Bottom three rows for RED pieces
+                # BOARD_SIZE is used as the variable if you want to change the size of the board.
+    for row in range(BOARD_SIZE - 3, BOARD_SIZE):  #Bottom three rows for RED pieces
         for col in range(BOARD_SIZE):
             if (row + col) % 2 == 1:
                 board[row][col] = RED
@@ -143,6 +144,7 @@ def minimax(board, depth, maximizing):
 
 #Main game loop for human vs AI
 def play_game():
+    """Main game loop."""
     board = create_board()
     human_player = 'r'
     current_player = 'r'
@@ -154,33 +156,33 @@ def play_game():
             if winner:
                 print(f"{'Human' if winner == human_player else 'AI'} wins!")
                 break
+
             if current_player == human_player:
                 while True:
+                    # Get source
                     try:
-                        print("Choose the piece you want to grab (e.g., F 0), or 'b' to go back:")
-                        piece_input = input().strip().upper()
-                        if piece_input == 'B':
+                        src = input("Choose the piece you want to grab (e.g., F 0 or 'b' to go back): ").strip().upper()
+                        if src == 'B':
                             # 'b' input lets the user cancel and reselect
-                            print("Returning to piece selection.")
                             continue
-                        row_col = piece_input.split()
-                        if len(row_col) != 2:     # If container has more than 2 elements, raise ValueErr
+                        row, col = src.split()
+                        if len(row) != 1:        #If container has more than 1 element, raise ValueErr
                             raise ValueError
-                        r1 = ord(row_col[0]) - 65 # Convert row letter to row index
-                        c1 = int(row_col[1])      # Convert to int
-
-                        print("Where do you want to place the piece (e.g., E 1), or 'b' to go back:")
-                        dest_input = input().strip().upper()
-                        if dest_input == 'B':
-                            # Another cancel block
-                            print("Move cancelled. Start over.")
-                            continue
-                        row_col = dest_input.split()
-                        if len(row_col) != 2:     # If container has more than 2 elements, raise ValueErr
+                        #Properly Separates to check for valid characters
+                        r1 = ord(row) - 65
+                        c1 = int(col)
+                        dst = input("Where do you want to place the piece? (e.g., D 2 or 'b' to go back): ").strip().upper()
+                        if dst == 'B':
+                            # 'b' input lets the user cancel and reselect
+                            continue  # go back to reselect piece
+                        row, col = dst.split()
+                        if len(row) != 1:        #If container has more than 1 element, raise ValueErr
                             raise ValueError
-                        r2 = ord(row_col[0]) - 65 # Convert row letter to row index
-                        c2 = int(row_col[1])      # Convert to int
-
+                        #Properly Separates to check for valid characters
+                        r2 = ord(row) - 65       
+                        c2 = int(col)
+                        if not is_valid_position(r2, c2):
+                            raise ValueError
                         # Check to see if this move is actually valid
                         move = ((r1, c1), (r2, c2))
                         if move in get_all_moves(board, human_player):
@@ -188,13 +190,9 @@ def play_game():
                             board = make_move(board, move)
                             break
                         else:
-                            print_board(board)
                             print("Invalid move. Try again.")
                     except ValueError:
-                        # 
-                        print_board(board)
-                        print("Invalid input. Please use the format 'Row Column': (F 0) ")
-
+                        print("Invalid input format. Use a single letter and number like 'E 1'.")
             else:
                 print("AI is thinking...")
                 _, move = minimax(board, 3, False)
